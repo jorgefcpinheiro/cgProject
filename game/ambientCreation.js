@@ -87,9 +87,9 @@ function ambientCreation () {
         meshes["tree" + i] = createTree(); //creates a tree
     }
     //creates the target
-    meshes["target"] = createTarget(); //creates a target
-
-    //position and scale the bow
+    meshes["target"] = createTarget(); //creates a target  
+    
+    //position aand scale the bow
     meshes["bow"].position.set(0,2,0);
     meshes["bow"].scale.set(.3,.3,.3);
     //add the bow to the scene
