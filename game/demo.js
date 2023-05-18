@@ -238,6 +238,7 @@ function animate() {
 
 
     //--------------------------CAMERA MOVEMENT--------------------------
+
     if ( keyboard[37] ) { // Left arrow key
         camera.rotation.y -= player.turnSpeed;
     }
@@ -245,6 +246,9 @@ function animate() {
     if ( keyboard[39] ) { // Right arrow key´
         camera.rotation.y += player.turnSpeed;
     }
+
+
+      
 
 
 
@@ -262,46 +266,48 @@ function animate() {
         //applys gravity to the arrow
         arrows[index].velocity.y -= 0.0025;
     }
-
-    if ( keyboard[32] && player.canShoot <= 0) { // space key 
-        //creates a arrow
-        var arrow = new THREE.Mesh( 
-            new THREE.CylinderGeometry(0.05,0.2, 8), //creates a sphere to make the arrow
-            new THREE.MeshBasicMaterial( {color: 0xffffff} ) //sets the color of the arrow
-        );
-
-        //rotate the arrow to make it go in the right direction
-        arrow.rotation.set(
-            camera.rotation.x,
-            camera.rotation.y - Math.PI / 2,
-            camera.rotation.z - Math.PI / 2
-        )
-
-        arrow.position.set( //sets the position of the arrow (near the weapon)
-            meshes["bow"].position.x, //x position of the weapon
-            meshes["bow"].position.y + 0.05, //y position of the weapon (a little bit higher than the weapon)
-            meshes["bow"].position.z //z position of the weapon
-        );
-
-        arrow.velocity = new THREE.Vector3( //sets the velocity of the arrow
-            -Math.sin(camera.rotation.y), //x velocity of the arrow
-            0, //y velocity of the arrow (it's affected by gravity later)
-            Math.cos(camera.rotation.y) //z velocity of the arrow
-        );
-
-        arrow.alive = true; //sets the arrow to alive
-        //function to kill the arrow after 1000ms
-        setTimeout(function(){
-            arrow.alive = false;
-            scene.remove(arrow);
-        }, 1000);
-
-        arrows.push(arrow); //adds the arrow to the arrows array
-
-        scene.add(arrow); //adds the arrow to the scene
-        player.canShoot = 20; //every x frames the player can shoot
-    } 
-    if (player.canShoot > 0) player.canShoot -= 1; //decreases the canShoot variable every frame (so the player can shoot again after a while)
+    document.addEventListener("mousedown", function (event){
+        if ( event.button === 0 && player.canShoot <= 0) { // space key
+            //creates a arrow
+            var arrow = new THREE.Mesh( 
+                new THREE.CylinderGeometry(0.05,0.2, 8), //creates a sphere to make the arrow
+                new THREE.MeshBasicMaterial( {color: 0xffffff} ) //sets the color of the arrow
+            );
+    
+            //rotate the arrow to make it go in the right direction
+            arrow.rotation.set(
+                camera.rotation.x,
+                camera.rotation.y - Math.PI / 2,
+                camera.rotation.z - Math.PI / 2
+            )
+    
+            arrow.position.set( //sets the position of the arrow (near the weapon)
+                meshes["bow"].position.x, //x position of the weapon
+                meshes["bow"].position.y + 0.05, //y position of the weapon (a little bit higher than the weapon)
+                meshes["bow"].position.z //z position of the weapon
+            );
+    
+            arrow.velocity = new THREE.Vector3( //sets the velocity of the arrow
+                -Math.sin(camera.rotation.y), //x velocity of the arrow
+                0, //y velocity of the arrow (it's affected by gravity later)
+                Math.cos(camera.rotation.y) //z velocity of the arrow
+            );
+    
+            arrow.alive = true; //sets the arrow to alive
+            //function to kill the arrow after 1000ms
+            setTimeout(function(){
+                arrow.alive = false;
+                scene.remove(arrow);
+            }, 1000);
+    
+            arrows.push(arrow); //adds the arrow to the arrows array
+    
+            scene.add(arrow); //adds the arrow to the scene
+            player.canShoot = 20; //every x frames the player can shoot
+        } 
+        if (player.canShoot > 0) player.canShoot -= 1; //decreases the canShoot variable every frame (so the player can shoot again after a while)
+    })
+    
 
     meshes["bow"].position.set( //sets the position of the weapon
         camera.position.x - Math.sin(camera.rotation.y + Math.PI/4) * 0.75,
@@ -325,6 +331,8 @@ function keyDown(event) { //function to check if a key is pressed
 function keyUp(event) { //function to check if a key is released
     keyboard[event.keyCode] = false;
 }
+
+
 
 window.addEventListener( 'keydown', keyDown); //adds the keydown event listener
 window.addEventListener( 'keyup', keyUp); //adds the keyup event listener
