@@ -94,28 +94,35 @@ function init() {
         new THREE.PlaneGeometry( 60, 60, 10, 10 ), //creates a plane with a width of 20, a height of 20, 10 segments on the width and 10 segments on the height
         new THREE.MeshPhongMaterial( { color: 0xffffff, wireframe:USE_WIREFRAME } ) //creates a new MeshPhongMaterial with a white color and the USE_WIREFRAME variable
     );
+    //adds a texture to the floor
+    var TextureLoader = new THREE.TextureLoader();
+    meshFloor.material.map = TextureLoader.load("textures/grass.jpg");
+    meshFloor.material.map.wrapS = THREE.RepeatWrapping;
+    meshFloor.material.map.wrapT = THREE.RepeatWrapping;
+    meshFloor.material.map.repeat.set( 10, 10 );
+    
     meshFloor.rotation.x -= Math.PI / 2; //rotates the meshFloor 90 degrees on the x axis
     meshFloor.receiveShadow = true; //makes the meshFloor receive shadows
     scene.add( meshFloor ); //adds the meshFloor to the scene
 
     //---------------------------SKYBOX---------------------------
    // Crie uma esfera com um raio grande o suficiente para envolver todo o ambiente
-var geometry = new THREE.SphereGeometry(500, 60, 40);
+    var geometry = new THREE.SphereGeometry(500, 60, 40);
 
-// Inverta as faces da esfera para que a textura apareça do lado correto
-geometry.scale(-1, 1, 1);
+    // Inverta as faces da esfera para que a textura apareça do lado correto
+    geometry.scale(-1, 1, 1);
 
-// Carregue a imagem panorâmica em 360 graus como textura
-var texture = new THREE.TextureLoader().load('./Image/Fundo.jpg');
+    // Carregue a imagem panorâmica em 360 graus como textura
+    var texture = new THREE.TextureLoader().load('./textures/skybox.jpg');
 
-// Mapeie a textura na esfera
-var material = new THREE.MeshBasicMaterial({ map: texture });
+    // Mapeie a textura na esfera
+    var material = new THREE.MeshBasicMaterial({ map: texture });
 
-// Crie uma malha com a geometria e o material
-var mesh = new THREE.Mesh(geometry, material);
+    // Crie uma malha com a geometria e o material
+    var mesh = new THREE.Mesh(geometry, material);
 
-// Adicione a malha à cena
-scene.add(mesh);
+    // Adicione a malha à cena
+    scene.add(mesh);
 
 
     //--------------------------LIGHT--------------------------
@@ -195,36 +202,7 @@ scene.add(mesh);
 
 //function to add the meshes to the scene
 function onResourcesLoaded(){
-    meshes["tent1"] = models.tent.mesh.clone(); //clones the tent mesh
-    meshes["tent2"] = models.tent.mesh.clone(); //clones the tent mesh again
-    meshes["campfire1"] = models.campfire.mesh.clone(); //clones the campfire mesh
-    meshes["campfire2"] = models.campfire.mesh.clone(); //clones the campfire mesh again
-    meshes["pirateShip"] = models.pirateShip.mesh.clone(); //clones the pirate ship mesh
-    meshes["bow"] = models.bow.mesh.clone(); //clones the bow mesh
-
-    //sets the position of the tent and adds it to the scene
-	meshes["tent1"].position.set(-5, 0, 4);
-	scene.add(meshes["tent1"]);
-    //sets the position of the tent 2 and adds it to the scene
-	meshes["tent2"].position.set(-8, 0, 4);
-	scene.add(meshes["tent2"]);
-	//sets the position of the campfire
-	meshes["campfire1"].position.set(-5, 0, 1);
-	meshes["campfire2"].position.set(-8, 0, 1);
-    //adds the campfire to the scene
-	scene.add(meshes["campfire1"]);
-	scene.add(meshes["campfire2"]);
-    //sets the position of the pirate ship and adds it to the scene
-	meshes["pirateShip"].position.set(-10, -1, 1);
-    meshes["pirateShip"].rotation.set(0, Math.PI, 0);
-	scene.add(meshes["pirateShip"]);
-
-    //position and scale the bow
-    meshes["bow"].position.set(0,2,0);
-    meshes["bow"].scale.set(.3,.3,.3);
-    //add the bow to the scene
-    scene.add(meshes["bow"]);
-
+    ambientCreation(); //calls the ambientCreation function
 }
 
 //function to animate the scene
