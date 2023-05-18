@@ -59,7 +59,7 @@ var models = {
 
 var meshes = {}; //creates the meshes variable
 
-var bullets = []; //creates the bullets array
+var arrows = []; //creates the arrows array
 
 
 
@@ -264,56 +264,56 @@ function animate() {
 
 
 
-    //--------------------------BULLET SHOOTING--------------------------
+    //--------------------------ARROW SHOOTING--------------------------
 
-    //for loop to add the bullets to the bullets array
-    for (var index=0; index<bullets.length; index+=1){
-        if (bullets[index] === undefined) continue;
-        if (bullets[index].alive = false){ //if it is not alive, removes it from the array
-            bullets.splice(index,1); //removes the bullet from the array
+    //for loop to add the arrows to the arrows array
+    for (var index=0; index<arrows.length; index+=1){
+        if (arrows[index] === undefined) continue;
+        if (arrows[index].alive = false){ //if it is not alive, removes it from the array
+            arrows.splice(index,1); //removes the arrow from the array
             continue;
         }
-        bullets[index].position.add(bullets[index].velocity); //moves the bullet
-        //applys gravity to the bullet
-        bullets[index].velocity.y -= 0.0025;
+        arrows[index].position.add(arrows[index].velocity); //moves the arrow
+        //applys gravity to the arrow
+        arrows[index].velocity.y -= 0.0025;
     }
 
     if ( keyboard[32] && player.canShoot <= 0) { // space key 
-        //creates a bullet
-        var bullet = new THREE.Mesh( 
+        //creates a arrow
+        var arrow = new THREE.Mesh( 
             new THREE.CylinderGeometry(0.05,0.2, 8), //creates a sphere to make the arrow
-            new THREE.MeshBasicMaterial( {color: 0xffffff} ) //sets the color of the bullet
+            new THREE.MeshBasicMaterial( {color: 0xffffff} ) //sets the color of the arrow
         );
 
         //rotate the arrow to make it go in the right direction
-        bullet.rotation.set(
+        arrow.rotation.set(
             camera.rotation.x,
             camera.rotation.y - Math.PI / 2,
             camera.rotation.z - Math.PI / 2
         )
 
-        bullet.position.set( //sets the position of the bullet (near the weapon)
+        arrow.position.set( //sets the position of the arrow (near the weapon)
             meshes["bow"].position.x, //x position of the weapon
             meshes["bow"].position.y + 0.05, //y position of the weapon (a little bit higher than the weapon)
             meshes["bow"].position.z //z position of the weapon
         );
 
-        bullet.velocity = new THREE.Vector3( //sets the velocity of the bullet
-            -Math.sin(camera.rotation.y), //x velocity of the bullet
-            0, //y velocity of the bullet (it's affected by gravity later)
-            Math.cos(camera.rotation.y) //z velocity of the bullet
+        arrow.velocity = new THREE.Vector3( //sets the velocity of the arrow
+            -Math.sin(camera.rotation.y), //x velocity of the arrow
+            0, //y velocity of the arrow (it's affected by gravity later)
+            Math.cos(camera.rotation.y) //z velocity of the arrow
         );
 
-        bullet.alive = true; //sets the bullet to alive
-        //function to kill the bullet after 1000ms
+        arrow.alive = true; //sets the arrow to alive
+        //function to kill the arrow after 1000ms
         setTimeout(function(){
-            bullet.alive = false;
-            scene.remove(bullet);
+            arrow.alive = false;
+            scene.remove(arrow);
         }, 1000);
 
-        bullets.push(bullet); //adds the bullet to the bullets array
+        arrows.push(arrow); //adds the arrow to the arrows array
 
-        scene.add(bullet); //adds the bullet to the scene
+        scene.add(arrow); //adds the arrow to the scene
         player.canShoot = 20; //every x frames the player can shoot
     } 
     if (player.canShoot > 0) player.canShoot -= 1; //decreases the canShoot variable every frame (so the player can shoot again after a while)
