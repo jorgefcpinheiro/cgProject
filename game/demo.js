@@ -26,21 +26,6 @@ var RESOURCES_LOADED = false; //creates the RESOURCES_LOADED variable
 //--------------------------MODELS--------------------------
 //models is an object that contains all the models that will be used in the game
 var models = {
-    tent: { //creates the tent object
-        obj:"models/Tent_Poles_01.obj",
-        mtl:"models/Tent_Poles_01.mtl",
-        mesh: null
-    },
-    campfire: { //creates the campfire object
-        obj:"models/Campfire_01.obj",
-        mtl:"models/Campfire_01.mtl",
-        mesh: null
-    },
-    pirateShip: { //creates the pirateShip object
-        obj:"models/PirateShip.obj",
-        mtl:"models/PirateShip.mtl",
-        mesh: null
-    },
     bow: { //creates the weapon object
         obj:"models/bow_01.obj",
         mtl:"models/bow_01.mtl",
