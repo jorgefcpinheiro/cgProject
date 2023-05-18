@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Shooting Game
-        </title>
-		<script type="text/javascript" src="../three.min.js" ></script>
-		
-		<script type="text/javascript" src="../MTLLoader.js" ></script>
-		<script type="text/javascript" src="../OBJLoader.js" ></script>
-		<script type="text/javascript" src="ambientCreation.js" ></script>
-		<script type="text/javascript" src="demo.js" ></script>
+		<title>Shooting Game</title>
+		<script type="text/javascript" src="../three.min.js"></script>
+		<script type="text/javascript" src="../MTLLoader.js"></script>
+		<script type="text/javascript" src="../OBJLoader.js"></script>
+		<script type="text/javascript" src="ambientCreation.js"></script>
+		<script type="text/javascript" src="demo.js"></script>
+		<style>
+			#scoreboard {
+			  position: absolute;
+			  top: 20px;
+			  left: 20px;
+			  font-size: 24px;
+			  color: black;
+			}
+		</style>
 	</head>
 	<body style="text-align:center;">
-		<span style="position:absolute;top:0px;left:0px;"><input type="button" value="Toggle Wireframe" onclick="mesh.material.wireframe=!mesh.material.wireframe;meshFloor.material.wireframe=!meshFloor.material.wireframe;"/><br/>WASD to move.<br/>Arrow keys to turn.</span>
+		<div id="scoreboard">
+			<span id="points">0</span> points
+		</div>
 	</body>
 </html>
