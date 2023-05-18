@@ -26,21 +26,6 @@ var RESOURCES_LOADED = false; //creates the RESOURCES_LOADED variable
 //--------------------------MODELS--------------------------
 //models is an object that contains all the models that will be used in the game
 var models = {
-    tent: { //creates the tent object
-        obj:"models/Tent_Poles_01.obj",
-        mtl:"models/Tent_Poles_01.mtl",
-        mesh: null
-    },
-    campfire: { //creates the campfire object
-        obj:"models/Campfire_01.obj",
-        mtl:"models/Campfire_01.mtl",
-        mesh: null
-    },
-    pirateShip: { //creates the pirateShip object
-        obj:"models/PirateShip.obj",
-        mtl:"models/PirateShip.mtl",
-        mesh: null
-    },
     bow: { //creates the weapon object
         obj:"models/bow_01.obj",
         mtl:"models/bow_01.mtl",
@@ -59,7 +44,7 @@ var models = {
 
 var meshes = {}; //creates the meshes variable
 
-var bullets = []; //creates the bullets array
+var arrows = []; //creates the arrows array
 
 
 
@@ -94,28 +79,35 @@ function init() {
         new THREE.PlaneGeometry( 60, 60, 10, 10 ), //creates a plane with a width of 20, a height of 20, 10 segments on the width and 10 segments on the height
         new THREE.MeshPhongMaterial( { color: 0xffffff, wireframe:USE_WIREFRAME } ) //creates a new MeshPhongMaterial with a white color and the USE_WIREFRAME variable
     );
+    //adds a texture to the floor
+    var TextureLoader = new THREE.TextureLoader();
+    meshFloor.material.map = TextureLoader.load("textures/grass.jpg");
+    meshFloor.material.map.wrapS = THREE.RepeatWrapping;
+    meshFloor.material.map.wrapT = THREE.RepeatWrapping;
+    meshFloor.material.map.repeat.set( 10, 10 );
+    
     meshFloor.rotation.x -= Math.PI / 2; //rotates the meshFloor 90 degrees on the x axis
     meshFloor.receiveShadow = true; //makes the meshFloor receive shadows
     scene.add( meshFloor ); //adds the meshFloor to the scene
 
     //---------------------------SKYBOX---------------------------
    // Crie uma esfera com um raio grande o suficiente para envolver todo o ambiente
-var geometry = new THREE.SphereGeometry(500, 60, 40);
+    var geometry = new THREE.SphereGeometry(500, 60, 40);
 
-// Inverta as faces da esfera para que a textura apareça do lado correto
-geometry.scale(-1, 1, 1);
+    // Inverta as faces da esfera para que a textura apareça do lado correto
+    geometry.scale(-1, 1, 1);
 
-// Carregue a imagem panorâmica em 360 graus como textura
-var texture = new THREE.TextureLoader().load('./Image/Fundo.jpg');
+    // Carregue a imagem panorâmica em 360 graus como textura
+    var texture = new THREE.TextureLoader().load('./textures/skybox.jpg');
 
-// Mapeie a textura na esfera
-var material = new THREE.MeshBasicMaterial({ map: texture });
+    // Mapeie a textura na esfera
+    var material = new THREE.MeshBasicMaterial({ map: texture });
 
-// Crie uma malha com a geometria e o material
-var mesh = new THREE.Mesh(geometry, material);
+    // Crie uma malha com a geometria e o material
+    var mesh = new THREE.Mesh(geometry, material);
 
-// Adicione a malha à cena
-scene.add(mesh);
+    // Adicione a malha à cena
+    scene.add(mesh);
 
 
     //--------------------------LIGHT--------------------------
@@ -195,36 +187,7 @@ scene.add(mesh);
 
 //function to add the meshes to the scene
 function onResourcesLoaded(){
-    meshes["tent1"] = models.tent.mesh.clone(); //clones the tent mesh
-    meshes["tent2"] = models.tent.mesh.clone(); //clones the tent mesh again
-    meshes["campfire1"] = models.campfire.mesh.clone(); //clones the campfire mesh
-    meshes["campfire2"] = models.campfire.mesh.clone(); //clones the campfire mesh again
-    meshes["pirateShip"] = models.pirateShip.mesh.clone(); //clones the pirate ship mesh
-    meshes["bow"] = models.bow.mesh.clone(); //clones the bow mesh
-
-    //sets the position of the tent and adds it to the scene
-	meshes["tent1"].position.set(-5, 0, 4);
-	scene.add(meshes["tent1"]);
-    //sets the position of the tent 2 and adds it to the scene
-	meshes["tent2"].position.set(-8, 0, 4);
-	scene.add(meshes["tent2"]);
-	//sets the position of the campfire
-	meshes["campfire1"].position.set(-5, 0, 1);
-	meshes["campfire2"].position.set(-8, 0, 1);
-    //adds the campfire to the scene
-	scene.add(meshes["campfire1"]);
-	scene.add(meshes["campfire2"]);
-    //sets the position of the pirate ship and adds it to the scene
-	meshes["pirateShip"].position.set(-10, -1, 1);
-    meshes["pirateShip"].rotation.set(0, Math.PI, 0);
-	scene.add(meshes["pirateShip"]);
-
-    //position and scale the bow
-    meshes["bow"].position.set(0,2,0);
-    meshes["bow"].scale.set(.3,.3,.3);
-    //add the bow to the scene
-    scene.add(meshes["bow"]);
-
+    ambientCreation(); //calls the ambientCreation function
 }
 
 //function to animate the scene
@@ -275,6 +238,7 @@ function animate() {
 
 
     //--------------------------CAMERA MOVEMENT--------------------------
+
     if ( keyboard[37] ) { // Left arrow key
         camera.rotation.y -= player.turnSpeed;
     }
@@ -284,61 +248,66 @@ function animate() {
     }
 
 
+      
 
 
-    //--------------------------BULLET SHOOTING--------------------------
 
-    //for loop to add the bullets to the bullets array
-    for (var index=0; index<bullets.length; index+=1){
-        if (bullets[index] === undefined) continue;
-        if (bullets[index].alive = false){ //if it is not alive, removes it from the array
-            bullets.splice(index,1); //removes the bullet from the array
+
+    //--------------------------ARROW SHOOTING--------------------------
+
+    //for loop to add the arrows to the arrows array
+    for (var index=0; index<arrows.length; index+=1){
+        if (arrows[index] === undefined) continue;
+        if (arrows[index].alive = false){ //if it is not alive, removes it from the array
+            arrows.splice(index,1); //removes the arrow from the array
             continue;
         }
-        bullets[index].position.add(bullets[index].velocity); //moves the bullet
-        //applys gravity to the bullet
-        bullets[index].velocity.y -= 0.0025;
+        arrows[index].position.add(arrows[index].velocity); //moves the arrow
+        //applys gravity to the arrow
+        arrows[index].velocity.y -= 0.0025;
     }
-
-    if ( keyboard[32] && player.canShoot <= 0) { // space key 
-        //creates a bullet
-        var bullet = new THREE.Mesh( 
-            new THREE.CylinderGeometry(0.05,0.2, 8), //creates a sphere to make the arrow
-            new THREE.MeshBasicMaterial( {color: 0xffffff} ) //sets the color of the bullet
-        );
-
-        //rotate the arrow to make it go in the right direction
-        bullet.rotation.set(
-            camera.rotation.x,
-            camera.rotation.y - Math.PI / 2,
-            camera.rotation.z - Math.PI / 2
-        )
-
-        bullet.position.set( //sets the position of the bullet (near the weapon)
-            meshes["bow"].position.x, //x position of the weapon
-            meshes["bow"].position.y + 0.05, //y position of the weapon (a little bit higher than the weapon)
-            meshes["bow"].position.z //z position of the weapon
-        );
-
-        bullet.velocity = new THREE.Vector3( //sets the velocity of the bullet
-            -Math.sin(camera.rotation.y), //x velocity of the bullet
-            0, //y velocity of the bullet (it's affected by gravity later)
-            Math.cos(camera.rotation.y) //z velocity of the bullet
-        );
-
-        bullet.alive = true; //sets the bullet to alive
-        //function to kill the bullet after 1000ms
-        setTimeout(function(){
-            bullet.alive = false;
-            scene.remove(bullet);
-        }, 1000);
-
-        bullets.push(bullet); //adds the bullet to the bullets array
-
-        scene.add(bullet); //adds the bullet to the scene
-        player.canShoot = 20; //every x frames the player can shoot
-    } 
-    if (player.canShoot > 0) player.canShoot -= 1; //decreases the canShoot variable every frame (so the player can shoot again after a while)
+    document.addEventListener("mousedown", function (event){
+        if ( event.button === 0 && player.canShoot <= 0) { // space key
+            //creates a arrow
+            var arrow = new THREE.Mesh( 
+                new THREE.CylinderGeometry(0.05,0.2, 8), //creates a sphere to make the arrow
+                new THREE.MeshBasicMaterial( {color: 0xffffff} ) //sets the color of the arrow
+            );
+    
+            //rotate the arrow to make it go in the right direction
+            arrow.rotation.set(
+                camera.rotation.x,
+                camera.rotation.y - Math.PI / 2,
+                camera.rotation.z - Math.PI / 2
+            )
+    
+            arrow.position.set( //sets the position of the arrow (near the weapon)
+                meshes["bow"].position.x, //x position of the weapon
+                meshes["bow"].position.y + 0.05, //y position of the weapon (a little bit higher than the weapon)
+                meshes["bow"].position.z //z position of the weapon
+            );
+    
+            arrow.velocity = new THREE.Vector3( //sets the velocity of the arrow
+                -Math.sin(camera.rotation.y), //x velocity of the arrow
+                0, //y velocity of the arrow (it's affected by gravity later)
+                Math.cos(camera.rotation.y) //z velocity of the arrow
+            );
+    
+            arrow.alive = true; //sets the arrow to alive
+            //function to kill the arrow after 1000ms
+            setTimeout(function(){
+                arrow.alive = false;
+                scene.remove(arrow);
+            }, 1000);
+    
+            arrows.push(arrow); //adds the arrow to the arrows array
+    
+            scene.add(arrow); //adds the arrow to the scene
+            player.canShoot = 20; //every x frames the player can shoot
+        } 
+        if (player.canShoot > 0) player.canShoot -= 1; //decreases the canShoot variable every frame (so the player can shoot again after a while)
+    })
+    
 
     meshes["bow"].position.set( //sets the position of the weapon
         camera.position.x - Math.sin(camera.rotation.y + Math.PI/4) * 0.75,
@@ -362,6 +331,8 @@ function keyDown(event) { //function to check if a key is pressed
 function keyUp(event) { //function to check if a key is released
     keyboard[event.keyCode] = false;
 }
+
+
 
 window.addEventListener( 'keydown', keyDown); //adds the keydown event listener
 window.addEventListener( 'keyup', keyUp); //adds the keyup event listener
