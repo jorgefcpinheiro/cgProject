@@ -262,6 +262,13 @@ function animate() {
             arrows.splice(index,1); //removes the arrow from the array
             continue;
         }
+        //checks if the arrow collides with the target (not working properly)
+        arrowCollider = new THREE.Box3().setFromObject(arrows[index]); //creates a collider for the arrow
+        targetCollider = new THREE.Box3().setFromObject(meshes["target"]); //creates a collider for the target
+        if (arrowCollider.intersectsBox(targetCollider)){ //if the arrow collides with the target
+            console.log("hit"); //prints hit
+            arrows[index].alive = false; //sets the arrow to not alive
+        }
         arrows[index].position.add(arrows[index].velocity); //moves the arrow
         //applys gravity to the arrow
         arrows[index].velocity.y -= 0.0025;
@@ -294,6 +301,7 @@ function animate() {
             );
     
             arrow.alive = true; //sets the arrow to alive
+
             //function to kill the arrow after 1000ms
             setTimeout(function(){
                 arrow.alive = false;
