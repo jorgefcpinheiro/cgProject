@@ -47,10 +47,25 @@ var meshes = {}; //creates the meshes variable
 var arrows = []; //creates the arrows array
 
 
+function instructions() {
+    document.getElementById("startGame").style.display = "none";
+    document.getElementById("instructions").style.display = "none";
+    document.getElementById("divInstructions").style.display = "block";
+    document.getElementById("back").style.display = "block";
+}
+
+function back() {
+    //refresh the page
+    window.location.reload();
+}
+
 
 //initializes the game and calls the animate function
 //--------------------------INIT--------------------------
 function init() {
+    document.getElementById("startGame").style.display = "none";
+    document.getElementById("scoreboard").style.display = "block";
+    document.getElementById("instructions").style.display = "none";
     scene = new THREE.Scene(); //initializes the scene
     camera = new THREE.PerspectiveCamera( 90, 1280/720, 0.1, 1000 ); //initializes the camera with a 90 degree field of view, a 1280/720 aspect ratio, a 0.1 near plane and a 1000 far plane
     clock = new THREE.Clock(); //initializes the clock variable to use in the animate function
@@ -345,4 +360,4 @@ function keyUp(event) { //function to check if a key is released
 window.addEventListener( 'keydown', keyDown); //adds the keydown event listener
 window.addEventListener( 'keyup', keyUp); //adds the keyup event listener
 
-window.onload = init; //when the window loads, calls the init function
+//window.onload = init; //when the window loads, calls the init function

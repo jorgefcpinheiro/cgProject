@@ -14,12 +14,27 @@
 			  left: 20px;
 			  font-size: 24px;
 			  color: black;
+			  display: none;
+			}
+			#divInstructions{
+				display: none;
+			}
+			#back{
+				display: none;
 			}
 		</style>
 	</head>
 	<body style="text-align:center;">
-		<div id="scoreboard">
+		<h1>Arrow Mastery</h1>
+		<div id="scoreboard" display="none">
 			<span id="points">0</span> points
+		</div>
+		<button id="startGame" onclick="init()">Start</button>
+		<button id="instructions" onclick="instructions()">Instructions</button>
+		<button id="back" onclick="back()">Back</button>
+		<div id="divInstructions">
+			<p>W,A,S,D to move<br>
+			Mouse to move the camera</p>
 		</div>
 	</body>
 </html>
