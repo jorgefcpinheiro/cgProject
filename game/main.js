@@ -1,3 +1,5 @@
+
+
 var scene, camera, renderer, mesh, clock; //creates the scene, camera, renderer, mesh and clock variables
 var meshFloor, ambientLight, light; //creates the meshFloor, ambientLight and light variables
 const GRAVITY = 0.01; //creates the gravity variable
@@ -58,6 +60,7 @@ function back() {
     //refresh the page
     window.location.reload();
 }
+
 
 
 //initializes the game and calls the animate function
@@ -126,10 +129,10 @@ function init() {
 
 
     //--------------------------LIGHT--------------------------
-    ambientLight = new THREE.AmbientLight( 0xffffff, 0.2 );  //creates a new AmbientLight with a white color and a 0.2 intensity
+    ambientLight = new THREE.AmbientLight( 0xffffff, 0.5 );  //creates a new AmbientLight with a white color and a 0.2 intensity
     scene.add( ambientLight ); //adds the ambientLight to the scene
 
-    light = new THREE.PointLight( 0xffffff, 0.8, 18 ); //creates a new PointLight with a white color, a 0.8 intensity and a distance of 18
+    light = new THREE.PointLight( 0xffffff, 0.5, 20 ); //creates a new PointLight with a white color, a 0.8 intensity and a distance of 18
     light.position.set( -3, 6, -3 ); //sets the position of the light
     light.castShadow = true; //makes the light cast shadows
     light.shadow.camera.near = 0.1; //sets the near plane of the light's shadow camera to 0.1
@@ -174,6 +177,9 @@ function init() {
     camera.position.set( 0, player.height, -5 ); //sets the position of the camera
     camera.lookAt( new THREE.Vector3( 0, player.height, 0 ) ); //makes the camera look at the center of the scene
 
+    //if i press anoder
+
+
 
     //--------------------------RENDERER--------------------------
     renderer = new THREE.WebGLRenderer(); //initializes the renderer
@@ -203,6 +209,7 @@ function init() {
 //function to add the meshes to the scene
 function onResourcesLoaded(){
     ambientCreation(); //calls the ambientCreation function
+    ambientCreation.receiveShadow = true;
 }
 
 //function to animate the scene
@@ -264,14 +271,14 @@ function animate() {
     }
 
     //por o codigo de cima 
-    if ( keyboard[38] ) { // Up arrow key
+    if ( keyboard[40] ) { // Up arrow key
         camera.rotation.x += player.speed;
         }
 
-        //por o codigo para baixo
-        if ( keyboard[40] ) { // Down arrow key
-            camera.rotation.x -= player.speed;
-            }
+    //por o codigo para baixo
+    if ( keyboard[38] ) { // Down arrow key
+        camera.rotation.x -= player.speed;
+        }
 
 
 
@@ -294,7 +301,7 @@ function animate() {
         }
         arrows[index].position.add(arrows[index].velocity); //moves the arrow
         //applys gravity to the arrow
-        arrows[index].velocity.y -= 0.0025;
+        arrows[index].velocity.y -= 0.0015;
     }
     document.addEventListener("mousedown", function (event){
         if ( event.button === 0 && player.canShoot <= 0) { // space key
