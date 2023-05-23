@@ -177,7 +177,24 @@ function init() {
     camera.position.set( 0, player.height, -5 ); //sets the position of the camera
     camera.lookAt( new THREE.Vector3( 0, player.height, 0 ) ); //makes the camera look at the center of the scene
 
-    //if i press anoder
+
+    //--------------------------CAMERA Pointer--------------------------
+            // Criar um objeto de controle de câmera
+        const controls = new PointerLockControls(camera, renderer.domElement)
+
+        // Adicionar eventos de bloqueio e desbloqueio de controles
+        controls.addEventListener('lock', function(){});
+        controls.addEventListener('unlock', function(){});
+
+
+        // Adicionar um evento de clique para bloquear os controles
+        document.addEventListener(
+            'click',
+            function(){
+                controls.lock()
+            },
+            false   
+        );
 
 
 
