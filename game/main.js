@@ -229,6 +229,7 @@ function animate() {
 
 
     //--------------------------MOVEMENT--------------------------
+    /*
     if ( keyboard[87] ) { // w key
         camera.position.x -= Math.sin( camera.rotation.y ) * player.speed;
         camera.position.z -= -Math.cos( camera.rotation.y ) * player.speed;
@@ -237,7 +238,7 @@ function animate() {
     if ( keyboard[83] ) { // s key
         camera.position.x += Math.sin( camera.rotation.y ) * player.speed;
         camera.position.z += -Math.cos( camera.rotation.y ) * player.speed;
-    }
+    }*/
 
     if ( keyboard[65] ) { // a key
         camera.position.x += Math.sin( camera.rotation.y + Math.PI / 2 ) * player.speed;
@@ -262,8 +263,15 @@ function animate() {
         camera.rotation.y += player.turnSpeed;
     }
 
+    //por o codigo de cima 
+    if ( keyboard[38] ) { // Up arrow key
+        camera.rotation.x += player.speed;
+        }
 
-      
+        //por o codigo para baixo
+        if ( keyboard[40] ) { // Down arrow key
+            camera.rotation.x -= player.speed;
+            }
 
 
 
