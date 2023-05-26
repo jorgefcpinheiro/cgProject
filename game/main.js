@@ -301,7 +301,7 @@ function animate() {
             //creates a arrow
             var arrow = new THREE.Mesh( 
                 new THREE.CylinderGeometry(0.05,0.2, 8), //creates a sphere to make the arrow
-                new THREE.MeshBasicMaterial( {color: 0xffffff} ) //sets the color of the arrow
+                new THREE.MeshBasicMaterial( {color: 0x964b00} ) //sets the color of the arrow
             );
     
             //rotate the arrow to make it go in the right direction
