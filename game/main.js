@@ -25,8 +25,6 @@ var loadingScreen = {
 var loadingManager = null; //creates the loadingManager variable
 var RESOURCES_LOADED = false; //creates the RESOURCES_LOADED variable
 
-var rigitBodys = []; //creates the rigitBodys array
-
 //--------------------------MODELS--------------------------
 //models is an object that contains all the models that will be used in the game
 var models = {
@@ -394,35 +392,6 @@ function keyUp(event) {
   keyboard[event.keyCode] = false;
 }
 
-function startAmmo(ammoClone) {
-  Ammo().then(function (Ammo) {
-    Ammo = Ammo;
-    this.ammoClone = Ammo;
-    createAmmo(Ammo);
-  });
-}
-
-function createAmmo(Ammo = ammoClone) {
-  this.tempTransform = new Ammo.btTransform();
-
-  setupPhysicsWorld(Ammo);
-}
-
-function setupPhysicsWorld(Ammo = this.ammoClone) {
-  let collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-  let dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
-  let overlappingPairCache = new Ammo.btDbvtBroadphase();
-  let solver = new Ammo.btSequentialImpulseConstraintSolver();
-
-  this.physicsWorld = new Ammo.btDiscreteDynamicsWorld(
-    dispatcher,
-    overlappingPairCache,
-    solver,
-    collisionConfiguration
-  );
-  this.physicsWorld.setGravity(0, -9.8, 0);
-  console.log("physics wolrd created");
-}
 
 window.addEventListener("keydown", keyDown); //adds the keydown event listener
 window.addEventListener("keyup", keyUp); //adds the keyup event listener
