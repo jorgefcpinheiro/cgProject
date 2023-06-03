@@ -9,47 +9,82 @@
 		<script type="text/javascript" src="ambientCreation.js"></script>
 		<script type="text/javascript" src="main.js"></script>
 		<style>
-			#scoreboard {
-			  position: absolute;
-			  top: 20px;
-			  left: 20px;
-			  font-size: 24px;
-			  color: black;
-			  display: none;
+			body {
+				background-color: #e6e6e6; /* Adiciona um estilo de fundo à página */
+				background-image: url('../game/textures/Background.jpg');
+  				background-repeat: no-repeat; /* impede que a imagem se repita na página */
+  				background-size: cover;
+ 				background-position: center center;
 			}
-			#divInstructions{
-				display: none;
-			}
-			#back{
-				display: none;
-				margin: 0 auto;
-			}
-			#startGame{
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				font-size: 24px;
-				color: black;
-				display: block;
-			}
-			#instructions{
-				position: absolute;
-				top: 60%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				font-size: 24px;
-				color: black;
-				display: none;
-			}
-			#title{
+			h1 {
+				font-family: "Arial Rounded MT Bold", sans-serif;
+				font-weight: bold; /* aumenta o peso da fonte para torná-la mais gorda */
 				text-align: center;
+				font-size: 90px;
+				color: brown;
+				margin-top: 100px;
+				text-transform: uppercase;
+				border-radius: 50px;
+				padding: 20px;
 			}
-			
+			button {
+				display: block;
+				margin: 30px auto 0; /* Centraliza os botões e adiciona uma margem superior */
+				padding: 20px 30px;
+				font-family: "Arial Rounded MT Bold", sans-serif;
+				font-size: 20px;
+				font-weight: bold;
+				color: white;
+				background-color: brown; /* Adiciona uma cor de fundo aos botões */
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+				box-shadow: 2px 2px 5px rgba(32, 30, 32, 0.3); /* Adiciona uma sombra aos botões */
+			}
+			button:hover {
+				background-color: #333; /* Altera a cor de fundo quando o botão é hover */
+			}
+			#scoreboard {
+				position: absolute;
+				top: 20px;
+			left: 20px;
+				font-size: 24px;
+				color: brown;
+				display: none;
+			}
+			#divInstructions {
+				display: none;
+				margin: 50px auto 0; /* Centraliza a seção de instruções e adiciona uma margem superior */
+				width: 400px;
+				background-color: white;
+				border-radius: 5px;
+				padding: 20px;
+				box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Adiciona uma sombra à seção de instruções */
+			}
+			#divInstructions p {
+				font-size: 18px;
+				line-height: 1.5;
+			}
+			#back {
+				display: block;
+				margin: 20px auto 0; /* Centraliza o botão de volta e adiciona uma margem superior */
+				padding: 10px 20px;
+				font-size: 18px;
+				font-weight: bold;
+				color: white;
+				background-color: blueviolet; /* Adiciona uma cor de fundo ao botão de volta */
+				border: none;
+				border-radius: 5px;
+				cursor: pointer;
+				box-shadow: 2px 2px 5px rgba(0, 0, 0,0.3); /* Adiciona uma sombra ao botão de volta */
+			}
+			#back:hover {
+				background-color: #333; /* Altera a cor de fundo quando o botão é hover */
+			}
 		</style>
 	</head>
 	<body>
-		<h1 id="title">Arrow Mastery</h1>
+		<h1>Arrow Mastery</h1>
 		<div id="scoreboard" display="none">
 			<span id="points">0</span> points
 			<button onclick="switchCamera()">Change Camera</button>
@@ -59,16 +94,9 @@
 		<button id="startGame" onclick="init()">Start</button>
 		<button id="instructions" onclick="instructions()">Instructions</button>
 		<div id="divInstructions">
-			<p>W,A,S,D to move<br>
-			Mouse to move the camera</p>
+			<p><strong>Instructions:</strong></p>
+			<p>Use the W, A, S, D keys to move your character and the mouse to move the camera.</p>
 			<button id="back" onclick="back()">Back</button>
 		</div>
-		<style>
-			body {
-				background-image: url('textures/Arco.jpg');
-				background-repeat: no-repeat;
-				background-size: cover;
-				}
-		</style>
 	</body>
 </html>

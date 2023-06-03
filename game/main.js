@@ -116,11 +116,12 @@ function init() {
   geometry.scale(-1, 1, 1);
 
   // Carregue a imagem panorâmica em 360 graus como textura
-  var texture = new THREE.TextureLoader().load("./textures/skybox.jpg");
-
+  var texture = new THREE.TextureLoader().load("./textures/ski1.jpg");
+  texture.repeat.x = 2;
+  texture.wrapS = THREE.RepeatWrapping;
   // Mapeie a textura na esfera
   var material = new THREE.MeshBasicMaterial({ map: texture });
-
+  
   // Crie uma malha com a geometria e o material
   var mesh = new THREE.Mesh(geometry, material);
 
@@ -128,10 +129,10 @@ function init() {
   scene.add(mesh);
 
   //--------------------------LIGHT--------------------------
-  ambientLight = new THREE.AmbientLight(0xffffff, 0.5); //creates a new AmbientLight with a white color and a 0.5 intensity
+  ambientLight = new THREE.AmbientLight(0xffffff, 0.5); //creates a new AmbientLight with a white color and a 0.2 intensity
   scene.add(ambientLight); //adds the ambientLight to the scene
 
-  light = new THREE.PointLight(0xffffff, 0.5, 20); //creates a new PointLight with a white color, a 0.5 intensity and a distance of 20
+  light = new THREE.PointLight(0xffffff, 0.5, 20); //creates a new PointLight with a white color, a 0.8 intensity and a distance of 18
   light.position.set(-3, 6, -3); //sets the position of the light
   light.castShadow = true; //makes the light cast shadows
   light.shadow.camera.near = 0.1; //sets the near plane of the light's shadow camera to 0.1
@@ -250,6 +251,7 @@ function animate() {
   var delta = clock.getDelta(); //sets the delta
 
   //--------------------------MOVEMENT--------------------------
+  /*
     if ( keyboard[87] ) { // w key
         camera.position.x -= Math.sin( camera.rotation.y ) * player.speed;
         camera.position.z -= -Math.cos( camera.rotation.y ) * player.speed;
@@ -258,7 +260,7 @@ function animate() {
     if ( keyboard[83] ) { // s key
         camera.position.x += Math.sin( camera.rotation.y ) * player.speed;
         camera.position.z += -Math.cos( camera.rotation.y ) * player.speed;
-    }
+    }*/
 
   if (keyboard[65]) {
     // a key
@@ -284,7 +286,7 @@ function animate() {
   }
 
   if (keyboard[39]) {
-    // Right arrow key
+    // Right arrow key´
     camera.rotation.y += player.turnSpeed;
   }
 
