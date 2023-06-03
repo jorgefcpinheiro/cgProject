@@ -128,10 +128,10 @@ function init() {
   scene.add(mesh);
 
   //--------------------------LIGHT--------------------------
-  ambientLight = new THREE.AmbientLight(0xffffff, 0.5); //creates a new AmbientLight with a white color and a 0.2 intensity
+  ambientLight = new THREE.AmbientLight(0xffffff, 0.5); //creates a new AmbientLight with a white color and a 0.5 intensity
   scene.add(ambientLight); //adds the ambientLight to the scene
 
-  light = new THREE.PointLight(0xffffff, 0.5, 20); //creates a new PointLight with a white color, a 0.8 intensity and a distance of 18
+  light = new THREE.PointLight(0xffffff, 0.5, 20); //creates a new PointLight with a white color, a 0.5 intensity and a distance of 20
   light.position.set(-3, 6, -3); //sets the position of the light
   light.castShadow = true; //makes the light cast shadows
   light.shadow.camera.near = 0.1; //sets the near plane of the light's shadow camera to 0.1
@@ -284,7 +284,7 @@ function animate() {
   }
 
   if (keyboard[39]) {
-    // Right arrow key´
+    // Right arrow key
     camera.rotation.y += player.turnSpeed;
   }
 
@@ -389,6 +389,44 @@ function keyDown(event) {
 function keyUp(event) {
   //function to check if a key is released
   keyboard[event.keyCode] = false;
+}
+
+function switchCamera() {
+  //change to a ortographic camera
+  if (camera instanceof THREE.PerspectiveCamera) {
+    camera = new THREE.OrthographicCamera(
+      window.innerWidth / -16,
+      window.innerWidth / 16,
+      window.innerHeight / 16,
+      window.innerHeight / -16,
+      -200,
+      1000
+    );
+    camera.position.set(120, 60, 180);
+    camera.lookAt(scene.position);
+  } else {
+    camera = new THREE.PerspectiveCamera(90, 1280 / 720, 0.1, 100),
+    camera.position.set(0, player.height, -5); //sets the position of the camera
+    camera.lookAt(new THREE.Vector3(0, player.height, 0)); //makes the camera look at the center of the scene
+  }
+}
+
+function turnOffPointLight () {
+  //turn off the point light
+  if (light.intensity == 0.5) {
+    light.intensity = 0;
+  } else {
+    light.intensity = 0.5;
+  }
+}
+
+function turnOffAmbientLight () {
+  //turn off the ambient light
+  if (ambientLight.intensity == 0.5) {
+    ambientLight.intensity = 0;
+  } else {
+    ambientLight.intensity = 0.5;
+  }
 }
 
 
