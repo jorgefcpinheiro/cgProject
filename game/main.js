@@ -88,7 +88,7 @@ function init() {
   };
 
   //--------------------------AMMO JS--------------------------
-  startAmmo(); //calls the startAmmo function
+  //startAmmo(); //calls the startAmmo function
   //--------------------------AMMO FUNCTION--------------------------
 
   //--------------------------FLOOR--------------------------
@@ -250,7 +250,6 @@ function animate() {
   var delta = clock.getDelta(); //sets the delta
 
   //--------------------------MOVEMENT--------------------------
-  /*
     if ( keyboard[87] ) { // w key
         camera.position.x -= Math.sin( camera.rotation.y ) * player.speed;
         camera.position.z -= -Math.cos( camera.rotation.y ) * player.speed;
@@ -259,7 +258,7 @@ function animate() {
     if ( keyboard[83] ) { // s key
         camera.position.x += Math.sin( camera.rotation.y ) * player.speed;
         camera.position.z += -Math.cos( camera.rotation.y ) * player.speed;
-    }*/
+    }
 
   if (keyboard[65]) {
     // a key
