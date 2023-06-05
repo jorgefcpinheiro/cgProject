@@ -11,6 +11,9 @@ var player = {
 }; //creates the player variable
 var USE_WIREFRAME = false; //creates the USE_WIREFRAME variable to use in the button
 
+var rigidBodies = []; //creates the rigidBodies array
+var ammoClone; //creates the ammoClone variable
+
 //--------------------------LOADING SCREEN--------------------------
 //creates the loading screen variables
 var loadingScreen = {
@@ -88,7 +91,7 @@ function init() {
   };
 
   //--------------------------AMMO JS--------------------------
-  //startAmmo(); //calls the startAmmo function
+  startAmmo(); //calls the startAmmo function
   //--------------------------AMMO FUNCTION--------------------------
 
   //--------------------------FLOOR--------------------------
@@ -97,6 +100,7 @@ function init() {
     new THREE.PlaneGeometry(60, 60, 10, 10), //creates a plane with a width of 20, a height of 20, 10 segments on the width and 10 segments on the height
     new THREE.MeshPhongMaterial({ color: 0xffffff, wireframe: USE_WIREFRAME }) //creates a new MeshPhongMaterial with a white color and the USE_WIREFRAME variable
   );
+
   //adds a texture to the floor
   var TextureLoader = new THREE.TextureLoader();
   meshFloor.material.map = TextureLoader.load("textures/grass.jpg");
@@ -107,6 +111,8 @@ function init() {
   meshFloor.rotation.x -= Math.PI / 2; //rotates the meshFloor 90 degrees on the x axis
   meshFloor.receiveShadow = true; //makes the meshFloor receive shadows
   scene.add(meshFloor); //adds the meshFloor to the scene
+
+
 
   //---------------------------SKYBOX---------------------------
   // Crie uma esfera com um raio grande o suficiente para envolver todo o ambiente
@@ -249,6 +255,8 @@ function animate() {
 
   var time = Date.now() * 0.0005; //sets the time
   var delta = clock.getDelta(); //sets the delta
+
+  updatePhysics(delta); //calls the updatePhysics function
 
   //--------------------------MOVEMENT--------------------------
   /*
@@ -430,6 +438,117 @@ function turnOffAmbientLight () {
     ambientLight.intensity = 0.5;
   }
 }
+
+function startAmmo() {
+  Ammo().then((Ammo) => {
+    Ammo = Ammo;
+    ammoClone = Ammo;
+    createAmmo(Ammo);
+  });
+}
+
+function createAmmo(Ammo = ammoClone){
+  this.tempTransform = new Ammo.btTransform();
+
+  setupPhysicsWorld(Ammo);
+}
+
+function setupPhysicsWorld(Ammo = ammoClone) {
+  let collisionConfiguration = new Ammo.btDefaultCollisionConfiguration()
+  let dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration)
+  let overlappingPairCache = new Ammo.btDbvtBroadphase()
+  let solver = new Ammo.btSequentialImpulseConstraintSolver() 
+
+  this.physicsWorld = new Ammo.btDiscreteDynamicsWorld(
+    dispatcher,
+    overlappingPairCache,
+    solver,
+    collisionConfiguration
+  )
+  this.physicsWorld.setGravity(new Ammo.btVector3(0, -9.8, 0))
+  console.log('physics world created')
+  applyPhysicsFloor(meshFloor, Ammo)
+  applyPhysicsBox(Ammo)
+}
+
+function applyPhysicsFloor(meshFloor, Ammo = ammoClone){
+  //physics ammojs floor
+  let floorMass = 0;
+  let transform = new ammoClone.btTransform();
+  transform.setIdentity();
+  transform.setOrigin(new Ammo.btVector3(meshFloor.position.x, meshFloor.position.y, meshFloor.position.z));
+  transform.setRotation(new Ammo.btQuaternion(meshFloor.quaternion.x, meshFloor.quaternion.y, meshFloor.quaternion.z, meshFloor.quaternion.w));
+
+  let motionState = new Ammo.btDefaultMotionState(transform);
+
+  let localInertia = new Ammo.btVector3(0, 0, 0);
+
+  let shape = new Ammo.btBoxShape(new Ammo.btVector3(meshFloor.scale.x * 0.5, meshFloor.scale.y * 0.5, meshFloor.scale.z * 0.5));
+  shape.setMargin(0.05);
+
+  shape.calculateLocalInertia(floorMass, localInertia);
+
+  let rigidBodyInfo = new Ammo.btRigidBodyConstructionInfo(floorMass, motionState, shape, localInertia);
+  let rBody = new Ammo.btRigidBody(rigidBodyInfo);
+
+  this.physicsWorld.addRigidBody(rBody);
+  console.log('physics floor created')
+}
+
+function applyPhysicsBox(Ammo = ammoClone){
+  let pos = {x: 0, y: 20, z: 0};
+  radius = 2;
+  let quat = {x: 0, y: 0, z: 0, w: 1};
+  mass = 1;
+  
+  let ball = new THREE.Mesh(new THREE.SphereGeometry(radius), new THREE.MeshPhongMaterial({color: 0xff0000}));
+  ball.position.set(pos.x, pos.y, pos.z);
+
+  ball.castShadow = true;
+  ball.receiveShadow = true;
+
+  this.scene.add(ball);
+
+  //Ammojs Section
+  let transform = new ammoClone.btTransform();
+  transform.setIdentity();
+  transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
+  transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
+
+  let motionState = new Ammo.btDefaultMotionState(transform);
+
+  let localInertia = new Ammo.btVector3(0, 0, 0);
+
+  let shape = new Ammo.btSphereShape(radius);
+  shape.setMargin(0.05);
+  shape.calculateLocalInertia(mass, localInertia);
+
+  let rigidBodyInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
+  let rBody = new Ammo.btRigidBody(rigidBodyInfo);
+
+  this.physicsWorld.addRigidBody(rBody);
+  ball.userData.physicsBody = rBody; 
+  rigidBodies.push(ball);
+  console.log('physics ball created')
+}
+
+function updatePhysics(delta) {
+ this.physicsWorld.stepSimulation(delta, 10);
+  for (let i = 0; i < rigidBodies.length; i++) {
+    let threeObject = rigidBodies[i];
+    let ammoObject = threeObject.userData.physicsBody;
+    let ms = ammoObject.getMotionState(); 
+
+    if (ms) {
+      ms.getWorldTransform(this.tempTransform);
+      let p = this.tempTransform.getOrigin();
+      let q = this.tempTransform.getRotation();
+      threeObject.position.set(p.x(), p.y(), p.z());
+      threeObject.quaternion.set(q.x(), q.y(), q.z(), q.w());
+    }
+  }
+}
+
 
 
 window.addEventListener("keydown", keyDown); //adds the keydown event listener
