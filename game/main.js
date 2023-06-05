@@ -79,6 +79,8 @@ function init() {
   document.getElementById("startGame").style.display = "none";
   document.getElementById("scoreboard").style.display = "block";
   document.getElementById("instructions").style.display = "none";
+  //decreses the site title by 50%
+  document.getElementById("title").style.fontSize = "350%";
   scene = new THREE.Scene(); //initializes the scene
   camera = new THREE.PerspectiveCamera(90, 1280 / 720, 0.1, 1000); //initializes the camera with a 90 degree field of view, a 1280/720 aspect ratio, a 0.1 near plane and a 1000 far plane
   clock = new THREE.Clock(); //initializes the clock variable to use in the animate function
