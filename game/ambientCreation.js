@@ -341,6 +341,18 @@ function ambientCreation () {
     scene.add(meshes["target1"]);
 
 
+    meshes["ambulance"] = models.ambulance.mesh.clone();
+    meshes["ambulance"].position.set(0, 0, 15);
+    meshes["ambulance"].scale.set(3, 3, 3);
+    meshes["ambulance"].rotation.set(0, -Math.PI / 2, 0);
+    scene.add(meshes["ambulance"]);
 
+    let ball = new THREE.Mesh(
+        new THREE.SphereGeometry(1, 8, 8),
+        new THREE.MeshLambertMaterial({ color: 0xff0000 })
+    );
+    meshes["ball"] = ball;
+    meshes["ball"].position.set(5, 8.7, 30);
+    scene.add(meshes["ball"]);
 
 }

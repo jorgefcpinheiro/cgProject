@@ -1,5 +1,5 @@
-var scene, camera, renderer, mesh, clock; //creates the scene, camera, renderer, mesh and clock variables
-var meshFloor, ambientLight, light; //creates the meshFloor, ambientLight and light variables
+var scene, camera, renderer, meshFloor, clock; //creates the scene, camera, renderer, mesh and clock variables
+var meshFloor, ambientLight, light, directionalLight; //creates the meshFloor, ambientLight and light variables
 const GRAVITY = 0.01; //creates the gravity variable
 
 var keyboard = {}; //creates the keyboard variable
@@ -13,6 +13,9 @@ var USE_WIREFRAME = false; //creates the USE_WIREFRAME variable to use in the bu
 
 var rigidBodies = []; //creates the rigidBodies array
 var ammoClone; //creates the ammoClone variable
+var movementDown
+var movementLeft
+
 
 //--------------------------LOADING SCREEN--------------------------
 //creates the loading screen variables
@@ -42,6 +45,13 @@ var models = {
     //creates the arrow object
     obj: "models/arrow.obj",
     mtl: "models/arrow.mtl",
+    mesh: null,
+    castShadow: false,
+  },
+  ambulance: {
+    //creates the ambulance object
+    obj: "models/ambulance.obj",
+    mtl: "models/ambulance.mtl",
     mesh: null,
     castShadow: false,
   },
@@ -96,21 +106,21 @@ function init() {
 
   //--------------------------FLOOR--------------------------
   //creates the floor
-  meshFloor = new THREE.Mesh(
+  this.meshFloor = new THREE.Mesh(
     new THREE.PlaneGeometry(60, 60, 10, 10), //creates a plane with a width of 20, a height of 20, 10 segments on the width and 10 segments on the height
     new THREE.MeshPhongMaterial({ color: 0xffffff, wireframe: USE_WIREFRAME }) //creates a new MeshPhongMaterial with a white color and the USE_WIREFRAME variable
   );
 
   //adds a texture to the floor
   var TextureLoader = new THREE.TextureLoader();
-  meshFloor.material.map = TextureLoader.load("textures/grass.jpg");
-  meshFloor.material.map.wrapS = THREE.RepeatWrapping;
-  meshFloor.material.map.wrapT = THREE.RepeatWrapping;
-  meshFloor.material.map.repeat.set(10, 10);
+  this.meshFloor.material.map = TextureLoader.load("textures/grass.jpg");
+  this.meshFloor.material.map.wrapS = THREE.RepeatWrapping;
+  this.meshFloor.material.map.wrapT = THREE.RepeatWrapping;
+  this.meshFloor.material.map.repeat.set(10, 10);
 
-  meshFloor.rotation.x -= Math.PI / 2; //rotates the meshFloor 90 degrees on the x axis
-  meshFloor.receiveShadow = true; //makes the meshFloor receive shadows
-  scene.add(meshFloor); //adds the meshFloor to the scene
+  this.meshFloor.rotation.x -= Math.PI / 2; //rotates the meshFloor 90 degrees on the x axis
+  this.meshFloor.receiveShadow = true; //makes the meshFloor receive shadows
+  scene.add(this.meshFloor); //adds the meshFloor to the scene
 
 
 
@@ -144,6 +154,15 @@ function init() {
   light.shadow.camera.near = 0.1; //sets the near plane of the light's shadow camera to 0.1
   light.shadow.camera.far = 25; //sets the far plane of the light's shadow camera to 25
   scene.add(light); //adds the light to the scene
+
+  //create a directional light
+  directionalLight = new THREE.DirectionalLight('red', 0.5);
+  directionalLight.position.set(0, 1, 0);
+  directionalLight.castShadow = true;
+  directionalLight.shadow.camera.near = 0.1;
+  directionalLight.shadow.camera.far = 25;
+  scene.add(directionalLight);
+
 
   //for loop through the models complex object to shadow every single simple object
   for (var _key in models) {
@@ -258,6 +277,33 @@ function animate() {
 
   updatePhysics(delta); //calls the updatePhysics function
 
+  //--------------------------AMBULANCE MOVEMENT--------------------------
+  if (meshes["ambulance"].position.x >= 19) {
+    movementLeft = false;
+    meshes["ambulance"].rotation.y += Math.PI;
+  } else if (meshes["ambulance"].position.x <= -19) {
+    movementLeft = true;
+    meshes["ambulance"].rotation.y += Math.PI;
+  }
+
+  if (movementLeft) {
+    meshes["ambulance"].position.x += 0.05;
+  } else {  
+    meshes["ambulance"].position.x -= 0.05;
+  }
+  
+  if (meshes["ball"].position.y >= 19) {
+    movementDown = true;
+  } else if (meshes["ball"].position.y <= 8.7) {
+    movementDown = false;
+  }
+
+  if (movementDown) {
+    meshes["ball"].position.y -= 0.05;
+  } else {
+    meshes["ball"].position.y += 0.05;
+  }
+
   //--------------------------MOVEMENT--------------------------
   /*
     if ( keyboard[87] ) { // w key
@@ -269,7 +315,7 @@ function animate() {
         camera.position.x += Math.sin( camera.rotation.y ) * player.speed;
         camera.position.z += -Math.cos( camera.rotation.y ) * player.speed;
     }*/
-
+    /*
   if (keyboard[65]) {
     // a key
     camera.position.x +=
@@ -285,6 +331,7 @@ function animate() {
     camera.position.z +=
       -Math.cos(camera.rotation.y - Math.PI / 2) * player.speed;
   }
+  */
 
   //--------------------------CAMERA MOVEMENT--------------------------
 
@@ -334,7 +381,8 @@ function animate() {
       var arrow = new THREE.Mesh(
         new THREE.CylinderGeometry(0.05, 0.2, 8), //creates a sphere to make the arrow
         new THREE.MeshBasicMaterial({ color: 0x964b00 }) //sets the color of the arrow
-      );
+      );  
+      
 
       //rotate the arrow to make it go in the right direction
       arrow.rotation.set(
@@ -439,6 +487,15 @@ function turnOffAmbientLight () {
   }
 }
 
+function turnOffDirectionalLight () {
+  //turn off the ambient light
+  if (directionalLight.intensity == 0.5) {
+    directionalLight.intensity = 0;
+  } else {
+    directionalLight.intensity = 0.5;
+  }
+}
+
 function startAmmo() {
   Ammo().then((Ammo) => {
     Ammo = Ammo;
@@ -467,11 +524,13 @@ function setupPhysicsWorld(Ammo = ammoClone) {
   )
   this.physicsWorld.setGravity(new Ammo.btVector3(0, -9.8, 0))
   console.log('physics world created')
-  applyPhysicsFloor(meshFloor, Ammo)
-  applyPhysicsBox(Ammo)
+  //applyPhysicsFloor(this.meshFloor, Ammo)
+  //applyPhysicsBox(Ammo)
+  //applyPhysicsBox2(Ammo)
 }
 
 function applyPhysicsFloor(meshFloor, Ammo = ammoClone){
+
   //physics ammojs floor
   let floorMass = 0;
   let transform = new ammoClone.btTransform();
@@ -530,6 +589,43 @@ function applyPhysicsBox(Ammo = ammoClone){
   ball.userData.physicsBody = rBody; 
   rigidBodies.push(ball);
   console.log('physics ball created')
+}
+
+function applyPhysicsBox2(Ammo = ammoClone){
+  let pos = {x: 1, y: 25, z: 0};
+  radius = 2;
+  let quat = {x: 0, y: 0, z: 0, w: 1};
+  mass = 1;
+  
+  let ball = new THREE.Mesh(new THREE.SphereGeometry(radius), new THREE.MeshPhongMaterial({color: 0x00ff00}));
+  ball.position.set(pos.x, pos.y, pos.z);
+
+  ball.castShadow = true;
+  ball.receiveShadow = true;
+
+  this.scene.add(ball);
+
+  //Ammojs Section
+  let transform = new ammoClone.btTransform();
+  transform.setIdentity();
+  transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
+  transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
+
+  let motionState = new Ammo.btDefaultMotionState(transform);
+
+  let localInertia = new Ammo.btVector3(0, 0, 0);
+
+  let shape = new Ammo.btSphereShape(radius);
+  shape.setMargin(0.05);
+  shape.calculateLocalInertia(mass, localInertia);
+
+  let rigidBodyInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
+  let rBody = new Ammo.btRigidBody(rigidBodyInfo);
+
+  this.physicsWorld.addRigidBody(rBody);
+  ball.userData.physicsBody = rBody; 
+  rigidBodies.push(ball);
+  console.log('physics ball2 created')
 }
 
 function updatePhysics(delta) {

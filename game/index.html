@@ -46,8 +46,8 @@
 			}
 			#scoreboard {
 				position: absolute;
-				top: 20px;
-			left: 20px;
+				top: 35	0px;
+				left: 1920px;
 				font-size: 24px;
 				color: brown;
 				display: none;
@@ -81,6 +81,9 @@
 			#back:hover {
 				background-color: #333; /* Altera a cor de fundo quando o botão é hover */
 			}
+			canvas {
+				margin-left: 380px;
+			}
 		</style>
 	</head>
 	<body>
@@ -90,6 +93,7 @@
 			<button onclick="switchCamera()">Change Camera</button>
 			<button onclick="turnOffPointLight()">Turn off Point Light</button>
 			<button onclick="turnOffAmbientLight()">Turn off Ambient Light</button>
+			<button onclick="turnOffDirectionalLight()">Turn off Directional Light</button>
 		</div>
 		<button id="startGame" onclick="init()">Start</button>
 		<button id="instructions" onclick="instructions()">Instructions</button>
